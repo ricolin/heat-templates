@@ -1,0 +1,34 @@
+heat_template_version: 2015-10-15
+
+description: Create keystone env for app class
+
+parameters:
+  role_in_project:
+    type: string
+    defalut: _member_
+    description: name of role that assign for user in project 
+    constraints:
+      - custom_constraint: keystone.role
+  project_number:
+    type: number
+    default: 1
+    constrains:
+      - range: { min: 1 }
+
+resources:
+
+  project_env:
+    type: OS::Heat::ResourceGroup
+    properties:
+      count: {get_param: project_number}
+      resource_def:
+        type: https://github.com/ricolin/heat-templates/blob/master/create_keystone_project_env.yaml
+        properties:
+          user_name: app_%index%_user
+          project_name: app_%index%_project
+          assign_role: {get_param: role_in_project}
+
+outputs:
+  user_names:
+    value: {get_attr: [project_env, attributes, user_name]} 
+  

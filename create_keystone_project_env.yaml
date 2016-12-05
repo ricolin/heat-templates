@@ -9,9 +9,6 @@ parameters:
   project_name:
     type: string
     description: prefix name for project resource
-  role_name:
-    type: string
-    description: prefix name for role resource
   assign_role:
     type: string
     description: role for users in each project
@@ -34,4 +31,7 @@ resources:
           project: {get_resource: class_project}
 
 outputs:
-  
+   user_name:
+     value: {get_attr: [class_user, name]} 
+   project_name:
+     value: {get_attr: [class_project, name]} 
