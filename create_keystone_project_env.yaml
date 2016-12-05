@@ -1,0 +1,37 @@
+heat_template_version: 2015-10-15
+
+description: Create keystone env for app class
+
+parameters:
+  user_name:
+    type: string
+    description: prefix name for user resource
+  project_name:
+    type: string
+    description: prefix name for project resource
+  role_name:
+    type: string
+    description: prefix name for role resource
+  assign_role:
+    type: string
+    description: role for users in each project
+
+resources:
+  class_project:
+    type: OS::Keystone::Project
+    properties:
+      name: {get_param: project_name}
+      enabled: true
+  class_user:
+    type: OS::Keystone::User
+    properties:
+      name: {get_param: user_name}
+      enabled: true
+      password: password
+      default_project: {get_resource: class_project}
+      roles:
+        - role: {get_resource: assign_role}
+          project: {get_resource: class_project}
+
+outputs:
+  
