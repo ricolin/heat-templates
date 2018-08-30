@@ -125,10 +125,21 @@ resources:
       alarm_queues:
        - {get_resource: alarm_queue}
 
-  deleted_event_alarm:
+  deleting_event_alarm:
     type: OS::Aodh::EventAlarm
     properties:
       event_type: compute.instance.delete.start
+      query:
+        - field: traits.instance_id
+          value: {get_resource: server}
+          op: eq
+      alarm_queues:
+       - {get_resource: alarm_queue}
+
+  deleted_event_alarm:
+    type: OS::Aodh::EventAlarm
+    properties:
+      event_type: compute.instance.delete.end
       query:
         - field: traits.instance_id
           value: {get_resource: server}
@@ -152,6 +163,7 @@ resources:
           - - {get_attr: [stop_event_alarm, show]}
             - {get_attr: [error_event_alarm, show]}
             - {get_attr: [deleted_event_alarm, show]}
+            - {get_attr: [deleting_event_alarm, show]}
 
   alarm_subscription:
     type: OS::Zaqar::MistralTrigger
